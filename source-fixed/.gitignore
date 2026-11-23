@@ -1,0 +1,6 @@
+node_modules
+dist
+# Copied from ../source by `pnpm sync`.
+src
+index.html
+tsconfig.json

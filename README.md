@@ -1,8 +1,9 @@
 # EmbedPDF: a Scrollbar thumb drag also pans the Stage
 
-Live demo: https://lazycompiler.github.io/embedpdf-scrollbar-drag-demo/
+- **The bug**, on the published 3.3.0: https://lazycompiler.github.io/embedpdf-scrollbar-drag-demo/
+- **With the fix**: https://lazycompiler.github.io/embedpdf-scrollbar-drag-demo/fixed/
 
-A minimal reproduction for [embedpdf/embed-pdf-viewer#1137](https://github.com/embedpdf/embed-pdf-viewer/pull/1137), built on the published `@embedpdf/react` and `@embedpdf/engine` 3.3.0 with only the stage and render plugins.
+A minimal reproduction for [embedpdf/embed-pdf-viewer#1137](https://github.com/embedpdf/embed-pdf-viewer/pull/1137). Both pages are the same code with only the stage and render plugins; they differ in the packages they are built on.
 
 ## The bug
 
@@ -16,10 +17,19 @@ While the thumb is still inside its track, the view also scrolls a little less t
 
 The `<Stage>` listens for `pointerdown` natively on an ancestor of the `<Scrollbar>`. React dispatches the bar's own `onPointerDown` from its root, after the Stage has already seen the press and begun a pan with it, so both follow the same pointer.
 
+## The two builds
+
+| | Page | Packages |
+| --- | --- | --- |
+| `source/` | the bug | `@embedpdf/react` and `@embedpdf/engine` 3.3.0 from npm |
+| `source-fixed/` | with the fix | `@embedpdf/react` and `@embedpdf/web` built from the pull request's branch at `15143837c` (`pnpm --filter @embedpdf/web --filter @embedpdf/react build`, then `pnpm pack`), kept in `source-fixed/packages/`; everything else 3.3.0 from npm |
+
+`source-fixed/` holds no code of its own: `pnpm sync` copies `source/src` into it before each build. The packed packages are Apache-2.0, as in the upstream repository.
+
 ## Run it locally
 
 ```sh
-cd source
+cd source        # or source-fixed
 pnpm install
 pnpm dev
 ```

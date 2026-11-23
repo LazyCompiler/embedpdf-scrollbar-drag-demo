@@ -16,6 +16,11 @@ h1 {
   margin: 0 0 8px;
 }
 
+.variant {
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+
 ol {
   margin: 0 0 12px;
   padding-left: 20px;

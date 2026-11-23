@@ -45,17 +45,60 @@ function ScrollReadout() {
   );
 }
 
+/** The same page is built twice: on the published packages, and on the packages built from the fix. */
+const IS_FIXED = import.meta.env.VITE_DEMO_VARIANT === 'fixed';
+const PULL_REQUEST_URL = 'https://github.com/embedpdf/embed-pdf-viewer/pull/1137';
+
+const COPY = IS_FIXED
+  ? {
+      title: 'EmbedPDF with the fix: a Scrollbar thumb drag only scrolls',
+      outcome: (
+        <>
+          The thumb stops at the end of its track and the page stays at the end of the document. The
+          readout below never turns red.
+        </>
+      ),
+      packages: (
+        <>
+          <code>@embedpdf/react</code> and <code>@embedpdf/web</code> built from{' '}
+          <a href={PULL_REQUEST_URL}>the pull request</a>, with <code>@embedpdf/engine</code> and
+          the plugins at 3.3.0 from npm. Source in <code>source-fixed/</code> of this repository.
+        </>
+      ),
+      otherHref: '../',
+      otherLabel: 'See the bug on the published 3.3.0',
+    }
+  : {
+      title: 'EmbedPDF 3.3.0: a Scrollbar thumb drag also pans the Stage',
+      outcome: (
+        <>
+          Once the thumb stops at the end of its track, the page scrolls <em>back up</em>, following
+          the pointer. The readout below turns red.
+        </>
+      ),
+      packages: (
+        <>
+          <code>@embedpdf/react</code> and <code>@embedpdf/engine</code> 3.3.0 from npm, with only
+          the stage and render plugins. Source in <code>source/</code> of this repository.
+        </>
+      ),
+      otherHref: './fixed/',
+      otherLabel: 'See the same page with the fix',
+    };
+
+document.title = COPY.title;
+
 function App() {
   return (
     <main>
-      <h1>EmbedPDF 3.3.0: a Scrollbar thumb drag also pans the Stage</h1>
+      <h1>{COPY.title}</h1>
+      <p className="variant">
+        <a href={COPY.otherHref}>{COPY.otherLabel} →</a>
+      </p>
       <ol>
         <li>Press the scrollbar thumb on the right edge of the viewer.</li>
         <li>Drag it down, past the bottom of the viewer, and keep going.</li>
-        <li>
-          Once the thumb stops at the end of its track, the page scrolls <em>back up</em>, following
-          the pointer. The readout below turns red.
-        </li>
+        <li>{COPY.outcome}</li>
       </ol>
       <Viewer engine={createEngine} plugins={PLUGINS} initialDocuments={INITIAL_DOCUMENTS}>
         <DocumentGate fallback={<p className="loading">Opening the document…</p>}>
@@ -68,10 +111,7 @@ function App() {
           </Stage>
         </DocumentGate>
       </Viewer>
-      <p className="note">
-        <code>@embedpdf/react</code> and <code>@embedpdf/engine</code> 3.3.0 from npm, with only the
-        stage and render plugins. Source in <code>source/</code> of this repository.
-      </p>
+      <p className="note">{COPY.packages}</p>
     </main>
   );
 }
